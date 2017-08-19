@@ -1,14 +1,10 @@
 require 'discordrb'
 require 'pry'
 require_relative 'services/reddit_service'
-SMASH_PREFIXES = ['Somalia', 'Kentucky Waterfall', 'Congo', 'Sudan', 'Alabama','Alaska','American Samoa','Arizona',
-  'Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia',
-  'Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa', 'Kansas','Kentucky','Louisiana','Maine','Marshall Islands',
-  'Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada',
-  'New Hampshire','New Jersey','New Mexico','New York','North Carolina','NorthDakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota',
-  'Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
+require_relative 'constants'
 
-bot = Discordrb::Commands::CommandBot.new token: 'MzQ3OTgzMzQxNTc3ODMwNDAx.DHgURA.9hQMk1X6Tniofmh19gvYaSeMvxg', client_id: 347983341577830401
+
+bot = Discordrb::Commands::CommandBot.new token: TOKEN, client_id: CLIENT_ID
 
 puts "This bot's invite URL is #{bot.invite_url}."
 puts 'Click on it to invite it to your server.'
