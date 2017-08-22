@@ -10,10 +10,10 @@ class GiphyService
     @api_connection = Faraday.new('http://api.giphy.com/v1/gifs/')
   end
 
-  def search(search_param)
+  def search(search_param, limit=nil)
     response = api_connection.get('search') do |req|
       req.params['q'] = search_param
-      req.params['limit'] = 20
+      req.params['limit'] = limit ? limit : 1
       req.params['api_key'] = GIPHY_API_KEY
     end
 

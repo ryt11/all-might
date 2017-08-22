@@ -42,7 +42,7 @@ bot.message(start_with: '!gif') do |event|
 end
 
 bot.message(start_with: '!detroitsmash') do |event|
-  response = GiphyService.new.search('detroit smash all might hero academia')
+  response = GiphyService.new.search('detroit smash all might hero academia', 20)
   event.respond(response.sample["url"])
 end
 
@@ -66,21 +66,31 @@ bot.message(start_with: '!mypersonality') do |event|
   event.respond "#{event.user.name}'s random quote of the day '#{messages.sample["content"]}'. \n \n #{py.full_response(messages.length)}"
 end
 
-def message_controller(message, event, error='')
-  event.respond message + error
+def message_controller(message, event, error='', nsfw, first)
+  if nsfw && first
+    event.server.channels[2].send(message + error)
+    event.respond("Ahh, my eyes.. go over here to look at that <##{event.server.channels[2].id}>")
+  elsif nsfw
+    event.server.channels[2].send(message + error)
+  else
+    event.respond(message + error)
+  end
 end
 
 def reddit_post_controller(posts, subreddit, event, limit)
   successful = "Here you go young man #{event.user.name}: the top #{posts.length} posts on /r/#{subreddit}"
   unsuccessful = " (#{limit.to_i - posts.length} missing or could not be located from original request of #{limit})"
+  nsfw = "Ahh, my eyes.. go over here to look at that <##{event.server.channels[2].id}>"
     posts.each_with_index do |post, index|
+      nsfw = post[:data][:over_18]
       url = post[:data][:url]
-        if index == 0 && posts.length != limit.to_i
-          message_controller("#{successful} #{url}", event, unsuccessful)
-        elsif index == 0
-          message_controller("#{successful} #{url}", event)
+      first = index == 0
+        if first && posts.length != limit.to_i
+          message_controller("#{successful} #{url}", event, unsuccessful, nsfw, first)
+        elsif first
+          message_controller("#{successful} #{url}", event, '', nsfw, first)
         else
-          event.respond url
+          message_controller(url, event, '', nsfw, first)
         end
       end
 end
