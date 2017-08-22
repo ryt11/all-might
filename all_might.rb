@@ -11,7 +11,7 @@ bot = Discordrb::Commands::CommandBot.new token: TOKEN, client_id: CLIENT_ID
 puts "This bot's invite URL is #{bot.invite_url}."
 puts 'Click on it to invite it to your server.'
 
-#
+
 
 bot.message(start_with: '!top_reddit') do |event|
   subreddit = event.message.content.split(" ")[1]
@@ -32,10 +32,9 @@ bot.message(start_with: '!ass') do |event|
 end
 
 bot.message(start_with: '!mypersonality') do |event|
-  results = WatsonService.new.personality(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100), event.user.id)
+  results = WatsonService.new.personality(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100), event.user.id.to_s)
   py = Personality.new(results, event.user.name)
   event.respond py.full_response
-
 end
 
 
