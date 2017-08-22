@@ -25,8 +25,8 @@ class WatsonService
         "consumption_preferences" => true,
         "version"                 => "10-20-2016"
       },
-      :user                       => "bbfe7510-9d31-4303-bbcb-56444432a698",
-      :password                   => "uhapL2ksJT0D")
+      :user                       => WATSON_USER,
+      :password                   => WATSON_PW)
 
       JSON.parse(response.body)
     end
