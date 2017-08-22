@@ -1,0 +1,31 @@
+class Help
+
+  def self.my_personality
+    "Type '!mypersonality' to have IBM watson use his quirk on you."
+  end
+
+  def self.detroit_smash
+    "Type '!detroit_smash' for a random gif of me in action!"
+  end
+
+  def self.ass
+    "Type '!ass' to get your daily dose of ass. Careful **NSFW**"
+  end
+
+  def self.mysmash
+    "Type '!mysmash' and I will tell you which smash best suits you, young man."
+  end
+
+  def self.top_reddit
+    "Type '!top_reddit (subreddit) (limit)' where limit is the top x number of posts you want to see."
+  end
+
+  def self.gif
+    "Type '!gif (search_param)' to search giphy's database and have the first gif returned."
+  end
+
+  def self.help_list
+    "Hopefully this will shed some light on things, hero: \n \n #{my_personality} \n #{detroit_smash} \n #{ass} \n #{mysmash} \n #{top_reddit} \n #{gif}"
+  end
+
+end

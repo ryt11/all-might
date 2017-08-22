@@ -16,7 +16,7 @@ def emotion_output(emotion)
 end
 
 def full_response(msg_count)
-  "(Powered by IBM Watson) Personality profile for #{user} after analyzing #{word_count} words in the past #{msg_count} messages \n \n #{emotion_output(needs)} \n #{emotion_output(values)} \n #{emotion_output(personality_traits)}"
+  "Personality profile for #{user} after analyzing #{word_count} words in the past #{msg_count} messages \n \n (Powered by IBM Watson :robot:)  \n \n __**Needs**__ \n #{emotion_output(needs)} \n __**Values**__ \n #{emotion_output(values)} \n __**Personality Traits**__ \n #{emotion_output(personality_traits)} "
 end
 
 
