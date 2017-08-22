@@ -17,15 +17,19 @@ class Help
   end
 
   def self.top_reddit
-    "Type '!top_reddit (subreddit) (limit)' where limit is the top x number of posts you want to see."
+    "Type '!top_reddit subreddit limit' where limit is the top x number of posts you want to see."
   end
 
   def self.gif
-    "Type '!gif (search_param)' to search giphy's database and have the first gif returned."
+    "Type '!gif search_param' to return a gif of your liking."
   end
 
   def self.help_list
-    "Hopefully this will shed some light on things, hero: \n \n #{my_personality} \n #{detroit_smash} \n #{ass} \n #{mysmash} \n #{top_reddit} \n #{gif}"
+    "Hopefully this will shed some light on things, hero: \n \n #{my_personality} \n #{detroit_smash} \n #{ass} \n #{mysmash} \n #{top_reddit} \n #{gif} \n #{random}"
+  end
+
+  def self.random
+    "Type '!random', or '!random parameter' (to narrow search down) for a random gif."
   end
 
 end

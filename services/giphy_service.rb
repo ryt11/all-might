@@ -21,5 +21,14 @@ class GiphyService
      response["data"]
   end
 
+  def random(tag=nil)
+    response = api_connection.get('random') do |req|
+      req.params['tag'] = tag if tag
+      req.params['api_key'] = GIPHY_API_KEY
+    end
+    response = JSON.parse(response.body)
+    response["data"]
+  end
+
 
 end

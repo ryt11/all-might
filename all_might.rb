@@ -18,8 +18,6 @@ bot.message(start_with: '!help') do |event|
   event.respond Help.help_list
 end
 
-
-
 bot.message(start_with: '!top_reddit') do |event|
   subreddit = event.message.content.split(" ")[1]
   limit = event.message.content.split(" ")[2]
@@ -28,7 +26,11 @@ bot.message(start_with: '!top_reddit') do |event|
   reddit_post_controller(posts, subreddit, event, limit)
 end
 
-
+bot.message(start_with: '!random') do |event|
+  origin_msg = event.message.content
+  response = origin_msg.length > 7 ? GiphyService.new.random(origin_msg[8..-1]) : GiphyService.new.random
+  event.respond response["url"]
+end
 
 
 bot.message(start_with: '!gif') do |event|
@@ -43,8 +45,6 @@ bot.message(start_with: '!detroitsmash') do |event|
   response = GiphyService.new.search('detroit smash all might hero academia')
   event.respond(response.sample["url"])
 end
-
-
 
 bot.message(start_with: '!ass') do |event|
   subreddit = "ass"
@@ -61,12 +61,10 @@ bot.message(start_with: '!mypersonality') do |event|
     messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
     break if prev_count == messages.length
   end
-  results = WatsonService.new.personality(messages, event.user.id.to_s)
-  py = Personality.new(results, event.user.name)
+  response = WatsonService.new.personality(messages, event.user.id.to_s)
+  py = Personality.new(response, event.user.name)
   event.respond "#{event.user.name}'s random quote of the day '#{messages.sample["content"]}'. \n \n #{py.full_response(messages.length)}"
 end
-
-
 
 def message_controller(message, event, error='')
   event.respond message + error
