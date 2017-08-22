@@ -5,6 +5,7 @@ require_relative 'services/watson_service'
 require_relative 'services/giphy_service'
 require_relative 'constants'
 require_relative 'personality'
+require_relative 'tone'
 require_relative 'help'
 
 
@@ -54,13 +55,15 @@ bot.message(start_with: '!ass') do |event|
   reddit_post_controller(posts, subreddit, event, limit)
 end
 
+bot.message(start_with: '!tone') do |event|
+  messages = retrieve_messages(2000, event)
+  response = WatsonService.new.tone(messages)
+  tone = Tone.new(response, event.channel.name)
+  event.respond tone.full_response(messages.length, event.channel.id)
+end
+
 bot.message(start_with: '!mypersonality') do |event|
-  messages = []
-  until messages.length == 500
-    prev_count = messages.length
-    messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
-    break if prev_count == messages.length
-  end
+  messages = retrieve_messages(1000, event)
   response = WatsonService.new.personality(messages, event.user.id.to_s)
   py = Personality.new(response, event.user.name)
   event.respond "#{event.user.name}'s random quote of the day '#{messages.sample["content"]}'. \n \n #{py.full_response(messages.length)}"
@@ -93,6 +96,16 @@ def reddit_post_controller(posts, subreddit, event, limit)
           message_controller(url, event, '', nsfw, first)
         end
       end
+end
+
+def retrieve_messages(limit, event)
+  messages = []
+  until messages.length == limit
+    prev_count = messages.length
+    messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
+    break if prev_count == messages.length
+  end
+  messages
 end
 
 
