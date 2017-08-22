@@ -1,6 +1,7 @@
 require 'faraday'
 require 'pry'
 require 'JSON'
+require_relative 'parse'
 
 class RedditService
 
@@ -17,7 +18,5 @@ class RedditService
      parse(response.body)
   end
 
-  def parse(response)
-    JSON.parse(response, symbolize_names: true)
-  end
+
 end
