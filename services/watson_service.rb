@@ -10,8 +10,7 @@ class WatsonService
     @api_connection = "https://gateway.watsonplatform.net/personality-insights/api"
   end
 
-  def personality(json, uid)
-    messages = JSON.parse(json)
+  def personality(messages, uid)
     user_messages  = messages.map { |message| message["content"] if message["author"]["id"] == uid  }.compact!
     response = Excon.post(@api_connection + "/v3/profile",
       :body     => user_messages.join(" "),
@@ -28,7 +27,6 @@ class WatsonService
       :user                       => WATSON_USER,
       :password                   => WATSON_PW)
 
-      binding.pry
 
       JSON.parse(response.body)
     end

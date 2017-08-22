@@ -32,9 +32,15 @@ bot.message(start_with: '!ass') do |event|
 end
 
 bot.message(start_with: '!mypersonality') do |event|
-  results = WatsonService.new.personality(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100), event.user.id.to_s)
+  messages = []
+  until messages.length == 500
+    prev_count = messages.length
+    messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
+    break if prev_count == messages.length
+  end
+  results = WatsonService.new.personality(messages, event.user.id.to_s)
   py = Personality.new(results, event.user.name)
-  event.respond py.full_response
+  event.respond py.full_response(messages.length)
 end
 
 
