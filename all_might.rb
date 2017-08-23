@@ -42,7 +42,7 @@ bot.message(start_with: '!gif') do |event|
   end
 end
 
-bot.message(start_with: '!detroitsmash') do |event|
+bot.message(start_with: '!detroit_smash') do |event|
   response = GiphyService.new.search('detroit smash all might hero academia', 20)
   event.respond(response.sample["url"])
 end
@@ -59,7 +59,7 @@ bot.message(start_with: '!tone') do |event|
   messages = retrieve_messages(2000, event)
   response = WatsonService.new.tone(messages)
   tone = Tone.new(response, event.channel.name)
-  event.respond tone.full_response(messages.length, event.channel.id)
+  event.respond " A score less than 50% indicates that the tone is unlikely to be perceived in the content; a score greater than 75% indicates a high likelihood that the tone is perceived. \n \n #{tone.full_response(messages.length, event.channel.id)}"
 end
 
 bot.message(start_with: '!mypersonality') do |event|
@@ -105,7 +105,16 @@ def retrieve_messages(limit, event)
     messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
     break if prev_count == messages.length
   end
-  messages
+  binding.pry
+  data_sanitize(messages)
+end
+
+def data_sanitize(messages)
+  messages.reject {|message| sanitize_check(message) }
+end
+
+def sanitize_check(message)
+  message['content'][0] == '!' || message["author"]["id"] == "347983341577830401" || message['content'].include?('.com')
 end
 
 
