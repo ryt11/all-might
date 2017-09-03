@@ -6,3 +6,5 @@
  
  * IBM Watson Personality Profile for individual users based on messages in channel.
  
+
+To use this bot, clone the repository down to your machine and run all_might.rb then paste the link outputted in terminal and add All Might to your server.
