@@ -1,4 +1,4 @@
-All Might is a Discord Bot whos main features include:
+## All Might is a Discord Bot whos main features include:
  
  * Reddit API call interface for the top image posts on a subreddit including a NSFW filter that will output to a designated channel.
  
