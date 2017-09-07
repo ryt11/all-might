@@ -7,6 +7,9 @@ require_relative 'constants'
 require_relative 'personality'
 require_relative 'tone'
 require_relative 'help'
+# require 'imdb_party'
+
+
 
 
 bot = Discordrb::Commands::CommandBot.new token: TOKEN, client_id: CLIENT_ID
@@ -17,6 +20,11 @@ puts 'Click on it to invite it to your server.'
 
 bot.message(start_with: '!help') do |event|
   event.respond Help.help_list
+end
+
+
+bot.message do |event|
+    event.server.channels[5].send(event.message.content) unless event.message.embeds.empty?
 end
 
 bot.message(start_with: '!top_reddit') do |event|
@@ -33,6 +41,12 @@ bot.message(start_with: '!random') do |event|
   event.respond response["url"]
 end
 
+bot.message(start_with: '!links') do |event|
+  origin_msg = event.message.content
+  response = origin_msg.length > 7 ? GiphyService.new.random(origin_msg[8..-1]) : GiphyService.new.random
+  event.respond response["url"]
+end
+
 
 bot.message(start_with: '!gif') do |event|
   response = GiphyService.new.search(event.message.content[9..-1])
@@ -44,6 +58,11 @@ end
 
 bot.message(start_with: '!detroit_smash') do |event|
   response = GiphyService.new.search('detroit smash all might hero academia', 20)
+  event.respond(response.sample["url"])
+end
+
+bot.message(start_with: '!buzzme') do |event|
+  response = GiphyService.new.search('eric andre', 20)
   event.respond(response.sample["url"])
 end
 
@@ -72,7 +91,7 @@ end
 def message_controller(message, event, error='', nsfw, first)
   if nsfw && first
     event.server.channels[2].send(message + error)
-    event.respond("Ahh, my eyes.. go over here to look at that <##{event.server.channels[2].id}>")
+    event.respond("Ahh, my eyes.. go over here to look at that <##{event.server.channels[2].id}>") if event.channel.id != event.server.channels[2].id
   elsif nsfw
     event.server.channels[2].send(message + error)
   else
@@ -105,7 +124,6 @@ def retrieve_messages(limit, event)
     messages.empty? ? messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100)) : messages += JSON.parse(Discordrb::API::Channel.messages(TOKEN, event.channel.id, 100, messages.last["id"]))
     break if prev_count == messages.length
   end
-  binding.pry
   data_sanitize(messages)
 end
 

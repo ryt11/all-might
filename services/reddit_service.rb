@@ -15,7 +15,7 @@ class RedditService
     response = api_connection.get do |req|
       req.url "#{subreddit}/top.json?limit=#{limit}"
     end
-     parse(response.body)
+      parse(response.body) 
   end
 
 
