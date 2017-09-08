@@ -5,15 +5,22 @@ require_relative 'parse'
 require 'JSON'
 require 'excon'
 class WatsonService
-  attr_reader :api_connection, :payload
-  def initialize
+
+  attr_reader :api_connection, :uid, :messages
+  attr_accessor :personality_messages
+
+
+  def initialize(uid, messages)
     @api_connection = "https://gateway.watsonplatform.net/"
+    @uid = uid
+    @messages = messages
+    @personality_messages = nil
   end
 
-  def personality(messages, uid)
-    user_messages  = messages.map { |message| message["content"] if message["author"]["id"] == uid  }.compact!
+  def personality
+    @personality_messages = messages.map { |message| message["content"] if message["author"]["id"] == uid  }.compact!
     response = Excon.post(@api_connection + "personality-insights/api/v3/profile",
-      :body     => user_messages.join(" "),
+      :body     => personality_messages.join(" "),
       :headers  => {
         "Content-Type"            => "text/plain",
         "Content-Language"        => "en",
@@ -31,7 +38,7 @@ class WatsonService
       JSON.parse(response.body)
     end
 
-    def tone(messages)
+    def tone
       content = get_content(messages)
       response = Excon.post(@api_connection + "tone-analyzer/api/v3/tone",
        :body     => content.join(" "),

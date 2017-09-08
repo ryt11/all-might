@@ -24,7 +24,7 @@ end
 
 
 bot.message do |event|
-    event.server.channels[5].send(event.message.content) unless event.message.embeds.empty?
+  event.server.channels[5].send(event.message.content) unless event.message.embeds.empty? || event.channel.id == event.server.channels[5].id
 end
 
 bot.message(start_with: '!top_reddit') do |event|
@@ -40,13 +40,6 @@ bot.message(start_with: '!random') do |event|
   response = origin_msg.length > 7 ? GiphyService.new.random(origin_msg[8..-1]) : GiphyService.new.random
   event.respond response["url"]
 end
-
-bot.message(start_with: '!links') do |event|
-  origin_msg = event.message.content
-  response = origin_msg.length > 7 ? GiphyService.new.random(origin_msg[8..-1]) : GiphyService.new.random
-  event.respond response["url"]
-end
-
 
 bot.message(start_with: '!gif') do |event|
   response = GiphyService.new.search(event.message.content[9..-1])
@@ -76,16 +69,18 @@ end
 
 bot.message(start_with: '!tone') do |event|
   messages = retrieve_messages(2000, event)
-  response = WatsonService.new.tone(messages)
+  watson_serv = WatsonService.new.(event.user.id, messages)
+  response = watson_serv.tone
   tone = Tone.new(response, event.channel.name)
   event.respond " A score less than 50% indicates that the tone is unlikely to be perceived in the content; a score greater than 75% indicates a high likelihood that the tone is perceived. \n \n #{tone.full_response(messages.length, event.channel.id)}"
 end
 
 bot.message(start_with: '!mypersonality') do |event|
   messages = retrieve_messages(1000, event)
-  response = WatsonService.new.personality(messages, event.user.id.to_s)
+  watson_serv = WatsonService.new(event.user.id.to_s, messages)
+  response = watson_serv.personality
   py = Personality.new(response, event.user.name)
-  event.respond "#{event.user.name}'s random quote of the day '#{messages.sample["content"]}'. \n \n #{py.full_response(messages.length)}"
+  event.respond "#{event.user.name}'s random quote of the day '#{watson_serv.personality_messages.sample}'. \n \n #{py.full_response(messages.length)}"
 end
 
 def message_controller(message, event, error='', nsfw, first)
@@ -134,11 +129,6 @@ end
 def sanitize_check(message)
   message['content'][0] == '!' || message["author"]["id"] == "347983341577830401" || message['content'].include?('.com')
 end
-
-
-
-
-
 
 
 bot.run
