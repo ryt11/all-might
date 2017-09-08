@@ -28,8 +28,9 @@ bot.message do |event|
 end
 
 bot.message(start_with: '!top_reddit') do |event|
-  subreddit = event.message.content.split(" ")[1]
-  limit = event.message.content.split(" ")[2]
+  request = event.message.content.split(" ")
+  subreddit = request[1]
+  limit = request[2] && request[2].to_i <= 20 ? request[2] : 5
   response = RedditService.new.top_posts(subreddit, limit)
   posts = response[:data][:children]
   reddit_post_controller(posts, subreddit, event, limit)
