@@ -24,7 +24,9 @@ end
 
 
 bot.message do |event|
-  event.server.channels[5].send(event.message.content) unless event.message.embeds.empty? || event.channel.id == event.server.channels[5].id
+ if event.message.content.include?('http')
+  event.server.channels[5].send(event.message.content) unless event.channel.id == event.server.channels[5].id
+ end
 end
 
 bot.message(start_with: '!top_reddit') do |event|
@@ -70,7 +72,7 @@ end
 
 bot.message(start_with: '!tone') do |event|
   messages = retrieve_messages(2000, event)
-  watson_serv = WatsonService.new.(event.user.id, messages)
+  watson_serv = WatsonService.new(event.user.id, messages)
   response = watson_serv.tone
   tone = Tone.new(response, event.channel.name)
   event.respond " A score less than 50% indicates that the tone is unlikely to be perceived in the content; a score greater than 75% indicates a high likelihood that the tone is perceived. \n \n #{tone.full_response(messages.length, event.channel.id)}"
@@ -128,7 +130,7 @@ def data_sanitize(messages)
 end
 
 def sanitize_check(message)
-  message['content'][0] == '!' || message["author"]["id"] == "347983341577830401" || message['content'].include?('.com')
+  message['content'][0] == '!' || message["author"]["id"] == "347983341577830401" || message['content'].include?('http')
 end
 
 
