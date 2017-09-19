@@ -25,7 +25,7 @@ end
 
 bot.message do |event|
  if event.message.content.include?('http')
-  event.server.channels[5].send(event.message.content) unless event.channel.id == event.server.channels[5].id
+  event.server.channels[5].send("Shared by #{event.user.name}: #{event.message.content}") unless event.channel.id == event.server.channels[5].id
  end
 end
 
