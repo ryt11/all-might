@@ -6,5 +6,7 @@
  
  * IBM Watson Personality Profile for individual users based on messages in channel.
  
+ * Database tracking of custom goals for discord users, with statistics and custom loading bar output to chat.
+ 
 
 To use this bot, clone the repository down to your machine and run all_might.rb then paste the link outputted in terminal and add All Might to your server.
