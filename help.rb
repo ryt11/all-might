@@ -1,5 +1,9 @@
 class Help
 
+  def self.goals
+    "\n Before setting any goals make sure you are registed by using the '!register' command. \n To make a new goal use the !new_goal command in the following format: '!new_goal goal_name, goal_duration, retroactive_time' where goal duration is the number of days you'd like to stick to your goal and retroactive_time being the amount of days, if any, you have already alotted towards your goal"
+  end
+
   def self.my_personality
     "Type '!mypersonality' to have Watson use his quirk on you."
   end
@@ -25,7 +29,7 @@ class Help
   end
 
   def self.help_list
-    "Hopefully this will shed some light on things, hero: \n \n #{my_personality} \n #{detroit_smash} \n #{ass} \n #{mysmash} \n #{top_reddit} \n #{gif} \n #{random} \n #{tone}"
+    "Hopefully this will shed some light on things, hero: \n \n #{my_personality} \n #{detroit_smash} \n #{ass} \n #{mysmash} \n #{top_reddit} \n #{gif} \n #{random} \n #{tone} \n #{goals}"
   end
 
   def self.random

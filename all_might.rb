@@ -7,6 +7,8 @@ require_relative 'constants'
 require_relative 'personality'
 require_relative 'tone'
 require_relative 'help'
+require_relative 'models/user'
+require_relative 'models/goal'
 # require 'imdb_party'
 
 
@@ -25,8 +27,39 @@ end
 
 bot.message do |event|
  if event.message.content.include?('http')
-  event.server.channels[5].send("Shared by #{event.user.name}: #{event.message.content}") unless event.channel.id == event.server.channels[5].id
+  event.server.channels[5].send("Shared by #{event.user.name}: #{event.message.content}"  ) unless event.channel.id == event.server.channels[5].id
  end
+end
+
+
+bot.message(start_with: '!register') do |event|
+  user = User.new(event.user.id.to_s, event.user.name)
+  return event.respond(user.uniqueness) unless user.nonexistent
+  user.register
+  event.respond(user.welcome)
+end
+
+bot.message(start_with: '!new_goal') do |event|
+  User.goals(event.user.id)
+  user_id = User.find(event.user.id)["id"]
+  goal_info = event.message.content[10..-1].split(',')
+  goal = goal_info[2] ? Goal.new(goal_info[0], goal_info[1], user_id, goal_info[2]) :  Goal.new(goal_info[0], goal_info[1], user_id)
+  goal.create_goal
+  #find user then use that user's id to create new Goal along with other Goal info
+end
+
+bot.message(start_with: '!mygoals') do |event|
+  goals = User.goals(event.user.id)
+  event.respond "You have no goals #{event.user.name}... Eek" if goals.num_tuples.zero?
+  response = ""
+
+  goals.each do |result|
+    total_days = Goal.total_days(result['start_date'], result['retroactivity'])
+    pct_complete = Goal.percent_complete(result['duration'], total_days)
+    response << "**#{result['goal_name']}**:\n \n Days Completed: **#{total_days}** \n #{pct_complete.floor}%  #{Goal.progress_bar(pct_complete)} \n \n"
+  end
+
+  event.respond(response)
 end
 
 bot.message(start_with: '!top_reddit') do |event|
