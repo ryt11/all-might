@@ -1,7 +1,7 @@
 class Help
 
   def self.goals
-    "\n Before setting any goals make sure you are registed by using the '!register' command. \n To make a new goal use the !new_goal command in the following format: '!new_goal goal_name, goal_duration, retroactive_time' where goal duration is the number of days you'd like to stick to your goal and retroactive_time being the amount of days, if any, you have already alotted towards your goal"
+    "\n Before setting any goals make sure you are registered by using the '!register' command. \n To make a new goal use the !new_goal command in the following format: '!new_goal goal_name, goal_duration, retroactive_time' where goal duration is the number of days you'd like to stick to your goal and retroactive_time being the amount of days, if any, you have already alotted towards your goal. \n Ex: !new_goal no smoking, 30, 5. Use '!mygoals' to track your progress.  "
   end
 
   def self.my_personality
@@ -9,7 +9,7 @@ class Help
   end
 
   def self.detroit_smash
-    "Type '!detroit_smash' for a random gif of me in action!"
+    "Type '!detroitsmash' for a random gif of me in action!"
   end
 
   def self.ass

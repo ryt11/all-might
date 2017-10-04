@@ -27,6 +27,11 @@ class Goal
     res.values.flatten.first.nil? ? 1 : res.values.flatten.first.to_i + 1
   end
 
+  def self.clear(discord_id)
+    uid = User.find(discord_id)["id"]
+    res = Databasable.connection.exec_params("DELETE FROM goals WHERE user_id = '#{uid}'")
+  end
+
   def self.percent_complete(duration, total_days)
     return 0.0 if total_days <= 0
     total_days.to_f / duration.to_i * 100
@@ -34,7 +39,7 @@ class Goal
 
   def self.total_days(start_date, retroactivity)
     start = Time.parse(start_date)
-    ((Time.now - start) / 60 / 60 / 24).floor + retroactivity.to_i
+    ((start - Time.now) / 60 / 60 / 24).floor + retroactivity.to_i
   end
 
   def self.progress_bar(percentage)

@@ -21,7 +21,7 @@ puts 'Click on it to invite it to your server.'
 
 
 bot.message(start_with: '!help') do |event|
-  event.respond Help.help_list
+  event.respond to_ruby_code_block(Help.help_list)
 end
 
 
@@ -32,11 +32,15 @@ bot.message do |event|
 end
 
 
+bot.message(start_with: '!mysmash') do |event|
+  event.respond "You would easily defeate your foes with your signature move: **#{SMASH_PREFIXES.sample} SMMMAAASH**"
+end
+
 bot.message(start_with: '!register') do |event|
   user = User.new(event.user.id.to_s, event.user.name)
   return event.respond(user.uniqueness) unless user.nonexistent
   user.register
-  event.respond(user.welcome)
+  event.respond user.welcome
 end
 
 bot.message(start_with: '!new_goal') do |event|
@@ -48,6 +52,15 @@ bot.message(start_with: '!new_goal') do |event|
   #find user then use that user's id to create new Goal along with other Goal info
 end
 
+
+
+bot.message(start_with: '!cleargoals') do |event|
+
+  Goal.clear(event.user.id)
+  event.respond "Goals cleared, #{event.user.name}."
+end
+
+
 bot.message(start_with: '!mygoals') do |event|
   goals = User.goals(event.user.id)
   event.respond "You have no goals #{event.user.name}... Eek" if goals.num_tuples.zero?
@@ -56,10 +69,10 @@ bot.message(start_with: '!mygoals') do |event|
   goals.each do |result|
     total_days = Goal.total_days(result['start_date'], result['retroactivity'])
     pct_complete = Goal.percent_complete(result['duration'], total_days)
-    response << "**#{result['goal_name']}**:\n \n Days Completed: **#{total_days}** \n #{pct_complete.floor}%  #{Goal.progress_bar(pct_complete)} \n \n"
+    response << "**#{result['goal_name']}**:\n \n Days Completed: **#{total_days} / #{result['duration']}** \n **#{pct_complete.floor}%**  #{Goal.progress_bar(pct_complete)} \n \n"
   end
 
-  event.respond(response)
+  event.respond response
 end
 
 bot.message(start_with: '!top_reddit') do |event|
@@ -85,7 +98,7 @@ bot.message(start_with: '!gif') do |event|
   end
 end
 
-bot.message(start_with: '!detroit_smash') do |event|
+bot.message(start_with: '!detroitsmash') do |event|
   response = GiphyService.new.search('detroit smash all might hero academia', 20)
   event.respond(response.sample["url"])
 end
@@ -160,6 +173,12 @@ end
 
 def data_sanitize(messages)
   messages.reject {|message| sanitize_check(message) }
+end
+
+def to_ruby_code_block(message)
+  "```Ruby
+  #{message}
+  ```"
 end
 
 def sanitize_check(message)
