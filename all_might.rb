@@ -1,4 +1,4 @@
-require 'discordrb'
+ require 'discordrb'
 require 'pry'
 require_relative 'services/reddit_service'
 require_relative 'services/watson_service'
@@ -106,14 +106,6 @@ end
 bot.message(start_with: '!buzzme') do |event|
   response = GiphyService.new.search('eric andre', 20)
   event.respond(response.sample["url"])
-end
-
-bot.message(start_with: '!ass') do |event|
-  subreddit = "ass"
-  limit = 5
-  response = RedditService.new.top_posts(subreddit, limit)
-  posts = response[:data][:children]
-  reddit_post_controller(posts, subreddit, event, limit)
 end
 
 bot.message(start_with: '!tone') do |event|
